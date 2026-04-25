@@ -5,15 +5,28 @@
   var overlay = document.getElementById("authOverlay");
   var form = document.getElementById("authForm");
   var passwordInput = document.getElementById("sitePassword");
+  var authButton = document.getElementById("authButton");
   var errorNode = document.getElementById("authError");
 
-  if (!passwordPlaintext || !body || !overlay || !form || !passwordInput) {
+  if (!passwordPlaintext || !body || !overlay || !form || !passwordInput || !authButton) {
     unlockSite();
     return;
   }
 
-  form.addEventListener("submit", function (event) {
+  authButton.addEventListener("click", attemptUnlock);
+  authButton.addEventListener("touchend", function (event) {
     event.preventDefault();
+    attemptUnlock();
+  }, { passive: false });
+
+  passwordInput.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      attemptUnlock();
+    }
+  });
+
+  function attemptUnlock() {
     hideError();
 
     if (String(passwordInput.value || "").trim() === passwordPlaintext) {
@@ -24,7 +37,7 @@
     showError();
     passwordInput.focus();
     passwordInput.select();
-  });
+  }
 
   function unlockSite() {
     body.classList.remove("auth-pending");
