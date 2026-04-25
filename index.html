@@ -9,7 +9,20 @@
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Newsreader:opsz,wght@6..72,500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="auth-pending">
+  <div class="auth-overlay" id="authOverlay" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <div class="auth-card">
+      <p class="eyebrow">Protected Access</p>
+      <h2 id="authTitle">Enter Password</h2>
+      <p class="muted">Enter the shared site password to continue.</p>
+      <form id="authForm" class="auth-form">
+        <label class="auth-label" for="sitePassword">Password</label>
+        <input id="sitePassword" class="auth-input" type="password" autocomplete="current-password" required>
+        <p class="auth-error" id="authError" hidden>Incorrect password. Please try again.</p>
+        <button type="submit" class="auth-button">Enter Site</button>
+      </form>
+    </div>
+  </div>
   <div class="site-shell">
     <header class="hero">
       <div class="hero__copy">
@@ -19,33 +32,17 @@
           Logistics board for attendees, airport movements, meals, and local coordination.
         </p>
       </div>
-      <div class="hero__aside">
-        <div class="hero__meta" id="eventMeta"></div>
-      </div>
     </header>
 
     <nav class="top-nav" aria-label="Primary">
       <a href="#attendees" data-view-link="attendees">Attendees</a>
       <a href="#airport" data-view-link="airport">Airport Pickup / Dropoff</a>
       <a href="#meals" data-view-link="meals">Meals</a>
+      <a href="#config" data-view-link="config">Config</a>
     </nav>
 
     <main class="layout">
       <aside class="sidebar">
-        <section class="panel">
-          <h2>Quick Summary</h2>
-          <div class="stats-grid" id="statsGrid"></div>
-        </section>
-
-        <section class="panel">
-          <h2>Load Spreadsheet</h2>
-          <p class="muted">Choose the registration `.xlsx` file to refresh the dashboard from the latest form responses.</p>
-          <label class="file-picker" for="xlsxInput">Choose Registration File</label>
-          <input id="xlsxInput" type="file" accept=".xlsx,.xlsm,.xls">
-          <p class="muted" id="sourceStatus">Using the bundled event data.</p>
-        </section>
-
-        <section class="panel notice" id="dataNotice"></section>
       </aside>
 
       <section class="content">
@@ -66,6 +63,8 @@
       </section>
     </main>
   </div>
+  <script src="auth-config.js"></script>
+  <script src="auth.js"></script>
   <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
   <script src="data.js"></script>
   <script src="app.js"></script>

@@ -3,6 +3,7 @@
   var data = cloneData(defaultData);
   var attendees = Array.isArray(data.attendees) ? data.attendees : [];
   var storageKey = "baps-logistics-data";
+  var currentSourceStatus = "Using the bundled event data.";
 
   var topViews = {
     attendees: {
@@ -28,6 +29,13 @@
       subviews: [
         { key: "to-go", label: "To Go" },
         { key: "restrictions", label: "Restrictions" }
+      ]
+    },
+    config: {
+      title: "Config",
+      description: "Spreadsheet loading and site data notes.",
+      subviews: [
+        { key: "setup", label: "Setup" }
       ]
     }
   };
@@ -60,8 +68,6 @@
     state.subview = topViews[state.view].subviews[0].key;
     bindNav();
     bindImporter();
-    renderMeta();
-    renderStats();
     renderNotice();
     render();
     window.addEventListener("hashchange", function () {
@@ -136,8 +142,6 @@
   function setData(nextData, statusText) {
     data = cloneData(nextData);
     attendees = Array.isArray(data.attendees) ? data.attendees : [];
-    renderMeta();
-    renderStats();
     renderNotice();
     render();
     setSourceStatus(statusText);
@@ -150,6 +154,7 @@
   }
 
   function setSourceStatus(text) {
+    currentSourceStatus = text;
     var node = document.getElementById("sourceStatus");
     if (node) {
       node.textContent = text;
@@ -163,42 +168,11 @@
     renderContent();
   }
 
-  function renderMeta() {
-    var meta = [
-      { label: "Event", value: data.event.name || "Meeting Logistics" },
-      { label: "Location", value: data.event.location || "Update location" },
-      { label: "Dates", value: data.event.dates || "Add dates" }
-    ];
-
-    document.getElementById("eventMeta").innerHTML = meta.map(function (item) {
-      return '<div class="meta-card"><span class="meta-label">' + escapeHtml(item.label) + '</span><span class="meta-value">' + escapeHtml(item.value) + "</span></div>";
-    }).join("");
-  }
-
-  function renderStats() {
-    var confirmed = attendees.filter(function (item) { return item.status === "Confirmed"; }).length;
-    var arrivals = attendees.filter(function (item) { return item.arrivalFlight; }).length;
-    var specialMeals = attendees.filter(function (item) { return item.foodNotes; }).length;
-    var rides = attendees.filter(function (item) {
-      return item.transportationNeed && item.transportationNeed !== "No hotel shuttle needed";
-    }).length;
-    var stats = [
-      { value: confirmed, label: "Confirmed" },
-      { value: arrivals, label: "With flights listed" },
-      { value: specialMeals, label: "Food restrictions" },
-      { value: rides, label: "Need local transport" }
-    ];
-
-    document.getElementById("statsGrid").innerHTML = stats.map(function (item) {
-      return '<div class="stat"><strong>' + escapeHtml(String(item.value)) + '</strong><span>' + escapeHtml(item.label) + "</span></div>";
-    }).join("");
-  }
-
   function renderNotice() {
     var notes = Array.isArray(data.event.notes) ? data.event.notes : [];
-    document.getElementById("dataNotice").innerHTML =
-      "<h2>Data Note</h2><p class=\"muted\">The site can use the bundled <strong>data.js</strong> file or load the registration spreadsheet directly from the sidebar.</p>" +
-      notes.map(function (note) { return "<p>" + escapeHtml(note) + "</p>"; }).join("");
+    return "<section class=\"panel\"><h2>Load Spreadsheet</h2><p class=\"muted\">Choose the registration `.xlsx` file to refresh the dashboard from the latest form responses.</p><label class=\"file-picker\" for=\"xlsxInput\">Choose Registration File</label><input id=\"xlsxInput\" type=\"file\" accept=\".xlsx,.xlsm,.xls\"><p class=\"muted\" id=\"sourceStatus\">Using the bundled event data.</p></section>" +
+      "<section class=\"panel notice\"><h2>Data Note</h2><p class=\"muted\">The site can use the bundled <strong>data.js</strong> file or load the registration spreadsheet directly in this Config tab.</p>" +
+      notes.map(function (note) { return "<p>" + escapeHtml(note) + "</p>"; }).join("") + "</section>";
   }
 
   function highlightTopNav() {
@@ -369,12 +343,22 @@
       html = renderAirportViews(filtered);
     } else if (state.view === "meals") {
       html = renderMealViews(filtered);
+    } else if (state.view === "config") {
+      html = renderConfigView();
     }
 
     contentArea.innerHTML = html || '<div class="panel empty-state">No records match the current filters.</div>';
     if (state.view === "attendees" && state.subview === "directory") {
       bindDirectoryFilters();
     }
+    if (state.view === "config") {
+      bindImporter();
+      setSourceStatus(currentSourceStatus);
+    }
+  }
+
+  function renderConfigView() {
+    return '<div class="view-stack">' + renderNotice() + "</div>";
   }
 
   function renderAirportViews(list) {
@@ -892,6 +876,7 @@
   function cloneData(value) {
     return JSON.parse(JSON.stringify(value || { event: {}, attendees: [] }));
   }
+
 
   function badge(text, tone) {
     var safeTone = tone ? " chip--" + tone : "";
