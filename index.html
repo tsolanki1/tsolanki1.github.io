@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BAPS NA Communications MidYear Meeting</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Newsreader:opsz,wght@6..72,500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="site-shell">
+    <header class="hero">
+      <div class="hero__copy">
+        <p class="eyebrow">Dallas, Texas</p>
+        <h1>BAPS NA Communications MidYear Meeting 2026</h1>
+        <p class="hero__text">
+          Logistics board for attendees, airport movements, meals, and local coordination.
+        </p>
+      </div>
+      <div class="hero__aside">
+        <div class="hero__meta" id="eventMeta"></div>
+      </div>
+    </header>
+
+    <nav class="top-nav" aria-label="Primary">
+      <a href="#attendees" data-view-link="attendees">Attendees</a>
+      <a href="#airport" data-view-link="airport">Airport Pickup / Dropoff</a>
+      <a href="#meals" data-view-link="meals">Meals</a>
+    </nav>
+
+    <main class="layout">
+      <aside class="sidebar">
+        <section class="panel">
+          <h2>Quick Summary</h2>
+          <div class="stats-grid" id="statsGrid"></div>
+        </section>
+
+        <section class="panel">
+          <h2>Load Spreadsheet</h2>
+          <p class="muted">Choose the registration `.xlsx` file to refresh the dashboard from the latest form responses.</p>
+          <label class="file-picker" for="xlsxInput">Choose Registration File</label>
+          <input id="xlsxInput" type="file" accept=".xlsx,.xlsm,.xls">
+          <p class="muted" id="sourceStatus">Using the bundled event data.</p>
+        </section>
+
+        <section class="panel notice" id="dataNotice"></section>
+      </aside>
+
+      <section class="content">
+        <div class="toolbar panel">
+          <div>
+            <h2 id="viewTitle">Attendees</h2>
+            <p id="viewDescription">All confirmed participants and their key preferences.</p>
+          </div>
+          <div class="filters" id="filters"></div>
+        </div>
+
+        <section class="panel">
+          <h2>Views</h2>
+          <div class="subnav" id="subnav"></div>
+        </section>
+
+        <section id="contentArea"></section>
+      </section>
+    </main>
+  </div>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
