@@ -26,10 +26,6 @@
     passwordInput.select();
   });
 
-  window.setTimeout(function () {
-    passwordInput.focus();
-  }, 0);
-
   function unlockSite() {
     body.classList.remove("auth-pending");
     if (overlay && overlay.parentNode) {
